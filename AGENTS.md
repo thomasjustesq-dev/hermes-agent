@@ -1155,3 +1155,38 @@ not the specific names.
 
 Reviewers should reject new change-detector tests; authors should convert
 them into invariants before re-requesting review.
+
+---
+
+## Cursor Cloud specific instructions
+
+The Cloud Agent startup (update) script installs `uv` if missing and runs
+`uv sync --extra all --python 3.11` from `/agent/repos/hermes-agent`. That
+creates/refreshes the project venv at `.venv` (Python 3.11) with the `all`
+extra, which also pulls in `dev` (ruff, ty, pytest). After startup you can use
+`.venv/bin/hermes`, `.venv/bin/ruff`, `.venv/bin/pytest` directly; `uv` lives at
+`~/.local/bin/uv`.
+
+Non-obvious notes for working here:
+
+- **`uv sync` prunes lazy-installed extras.** Many provider/TTS/search/messaging
+  backends are intentionally NOT in the `all` extra — they lazy-install at first
+  use via `tools/lazy_deps.py`. Re-running `uv sync` removes anything not in the
+  lock+extra set (e.g. `boto3`, `edge-tts` that `hermes doctor` pulled in). This
+  is expected; the deps reinstall on demand.
+- **Tests / lint / footguns:** run tests with `scripts/run_tests.sh` (see the
+  Testing section — never bare `pytest`); blocking lint is `ruff check .`; CI
+  also runs `python scripts/check-windows-footguns.py --all`. The full suite is
+  large (~1200 files); pass a path to scope it, e.g.
+  `scripts/run_tests.sh tests/hermes_state/`.
+- **Dev config lives outside the repo** in `~/.hermes/` (not created by the
+  update script). One-time: `mkdir -p ~/.hermes/{cron,sessions,logs,memories,skills}`
+  then `cp cli-config.yaml.example ~/.hermes/config.yaml` and `touch ~/.hermes/.env`.
+- **Live chat needs a provider.** Every agent turn calls an OpenAI-compatible
+  LLM; there is no built-in offline model. Add a key to `~/.hermes/.env` (e.g.
+  `OPENROUTER_API_KEY=...`) or run `hermes setup --portal`. To smoke-test the full
+  agent loop with no credentials, point Hermes at any local OpenAI-compatible
+  endpoint (`model.provider: custom`, `model.base_url: http://127.0.0.1:<port>/v1`).
+- **Non-interactive runs:** `HERMES_AUTO_APPROVE=1 hermes -z "<prompt>"` prints
+  only the final text; `hermes chat -q "<prompt>"` shows the tool-activity feed.
+  Auto-approve avoids the interactive dangerous-command prompt blocking the run.
