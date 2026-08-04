@@ -214,3 +214,7 @@ scripts/run_tests.sh
 MIT — see [LICENSE](LICENSE).
 
 Built by [Nous Research](https://nousresearch.com).
+
+## Agent coordination
+
+Multi-agent work uses claim-first process docs: [`CLAUDE.md`](CLAUDE.md), [`docs/WORKBOARD.md`](docs/WORKBOARD.md), [`docs/ASSIGNMENT.md`](docs/ASSIGNMENT.md).
