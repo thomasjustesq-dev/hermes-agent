@@ -1163,3 +1163,8 @@ not the specific names.
 
 Reviewers should reject new change-detector tests; authors should convert
 them into invariants before re-requesting review.
+
+## Fleet inference preference
+
+When selecting an LLM provider, prefer **Grok → Gemini → Kimi → OpenAI → Anthropic** (see `FLEET_INFERENCE.md`).
+
