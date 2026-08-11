@@ -14,3 +14,8 @@ Do not duplicate the product rulebook into this file — it lives in AGENTS.md.
 2. `docs/LIVE_CLAIMS.md` — do not start claimed work.
 3. Claim-first via `scripts/claim-open.sh` before product implementation.
 4. Never push directly to main.
+
+## Fleet inference preference
+
+When selecting an LLM provider, prefer **Grok → Gemini → Kimi → OpenAI → Anthropic** (see `FLEET_INFERENCE.md`).
+
